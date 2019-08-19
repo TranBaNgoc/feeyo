@@ -18,7 +18,7 @@ public class NoiseSuppressTest {
 
     public static void main(String[] args) throws LineUnavailableException {
 
-        NoiseSuppress ns = new NoiseSuppress(48000, 24000);
+        NoiseSuppress ns = new NoiseSuppress(8000, 1024);
 //		NoiseSample noiseSample = new NoiseSample();
 //		String filePath = "F:\\test\\1.pcm";
 //        byte[] fileBuff = null;
@@ -48,12 +48,15 @@ public class NoiseSuppressTest {
         speaker.open();
         speaker.start();
         int i = 0;
+        long start = System.nanoTime();
         while (true) {
 
             byte[] buff11;
 //            System.arraycopy(tempbuff, 0, buff11, 0, 2048);
 //toShortArray(buff11);
-            short[] ioPcm = recordFromMicrophone(microphone);
+            //short[] ioPcm = recordFromMicrophone(microphone);
+            short[] ioPcm = toShortArray(NoiseSample.WHITE_NOISE);
+            
             ioPcm = ns.noiseReductionProcess(ioPcm);
 //            buff11 = toByteArray(ioPcm);
 //			write(buff11);
@@ -61,7 +64,8 @@ public class NoiseSuppressTest {
 //            speaker.write(buff11, 0, buff11.length);
 
             buff11 = toByteArray(ioPcm);
-            System.out.println(i++ + " ------- " + Arrays.toString(buff11));
+            
+            System.out.println(((System.nanoTime() -  start) / 1000000000)+ " ------- " + Arrays.toString(buff11));
             speaker.write(buff11, 0, buff11.length);
         }
 
